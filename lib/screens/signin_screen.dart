@@ -1,8 +1,11 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, sort_child_properties_last, avoid_init_to_null, unused_field, avoid_unnecessary_containers, body_might_complete_normally_nullable, avoid_print
 
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wallet_app/screens/home_screen.dart';
+import 'package:wallet_app/screens/reset_password.dart';
 import 'package:wallet_app/screens/signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -20,6 +23,16 @@ class _SignInScreenState extends State<SignInScreen> {
   var _formkey = GlobalKey<FormState>();
 
   String? _nameError = null;
+  bool _isVisible = false;
+
+  void validateEmail() {
+    final bool isValid =
+        EmailValidator.validate(_emailTextController.text.trim());
+    if (!isValid) {
+      showToast_email();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -77,11 +90,29 @@ class _SignInScreenState extends State<SignInScreen> {
                         validator: (String? value) {
                           if (value!.isEmpty) {
                             return 'Please enter password';
+                          } else if (value.length < 6) {
+                            return 'Password length must be grater than 6 digit';
+                          } else if (value.length > 14) {
+                            return 'Password length should be smaller than 14 digit';
                           }
                         },
-                        obscureText: true,
+                        obscureText: !_isVisible,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _isVisible = !_isVisible;
+                              });
+                            },
+                            icon: _isVisible
+                                ? Icon(
+                                    Icons.visibility,
+                                    color: Colors.black54,
+                                  )
+                                : Icon(Icons.visibility_off),
+                            color: Colors.grey,
+                          ),
 
                           hintText: "Please enter password",
                           labelText: "Password",
@@ -91,7 +122,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 30,
+                        height: 1,
+                      ),
+                      forgetPassword(context),
+                      SizedBox(
+                        height: 10,
                       ),
                       SizedBox(
                         width: 340,
@@ -115,29 +150,23 @@ class _SignInScreenState extends State<SignInScreen> {
                               setState(() {
                                 if (_formkey.currentState!.validate()) {}
                               });
+                              validateEmail();
+                              // showToast();       showing in both with or without
                               FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
                                       email: _emailTextController.text.trim(),
                                       password:
                                           _passwordTextController.text.trim())
                                   .then((value) {
+                                // showToast();
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
                                         builder: ((context) => HomrScreen())));
                               }).onError((error, stackTrace) {
                                 print("Error ${error.toString()}");
+                                // showToast();
                               });
-
-                              // setState(() {
-                              //   if (_formkey.currentState!.validate()) {
-                              //     Navigator.push(context,
-                              //         MaterialPageRoute(builder: (context) {
-                              //       return();
-                              //     }));
-                              //   // ignore: empty_statements
-                              //   };
-                              // });
                             }),
                       ),
                       SizedBox(
@@ -172,4 +201,27 @@ class _SignInScreenState extends State<SignInScreen> {
       ],
     );
   }
+
+  Widget forgetPassword(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 35,
+      alignment: Alignment.bottomRight,
+      child: TextButton(
+        child: const Text(
+          "Forgot Password?",
+          style: TextStyle(color: Colors.blueGrey),
+          textAlign: TextAlign.right,
+        ),
+        onPressed: () => Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ResetPassword())),
+      ),
+    );
+  }
+
+  // void showToast() => Fluttertoast.showToast(
+  //     msg: "No account found", fontSize: 18, backgroundColor: Colors.black54);
+
+  void showToast_email() => Fluttertoast.showToast(
+      msg: "Not a valid Email", fontSize: 18, backgroundColor: Colors.black54);
 }

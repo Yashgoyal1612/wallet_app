@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:wallet_app/screens/home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -20,10 +21,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _formkey = GlobalKey<FormState>();
 
   // String? _nameError = null;
+  bool _isVisible = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // extendBodyBehindAppBar: true,
         appBar: AppBar(
           backgroundColor: Colors.deepPurple,
           elevation: 0,
@@ -82,11 +83,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     validator: (String? value) {
                       if (value!.isEmpty) {
                         return 'Please enter password';
+                      } else if (value.length < 6) {
+                        return 'Password length must be grater than 6 digit';
+                      } else if (value.length > 14) {
+                        return 'Password length should be smaller than 14 digit';
                       }
                     },
-                    obscureText: true,
+                    obscureText: !_isVisible,
                     decoration: InputDecoration(
                       prefixIcon: Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _isVisible = !_isVisible;
+                          });
+                        },
+                        icon: _isVisible
+                            ? Icon(
+                                Icons.visibility,
+                                color: Colors.black54,
+                              )
+                            : Icon(Icons.visibility_off),
+                        color: Colors.grey,
+                      ),
 
                       hintText: "Please enter password",
                       labelText: "Password",
@@ -125,7 +144,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   email: _emailTextController.text.trim(),
                                   password: _passwordTextController.text.trim())
                               .then((value) {
-                            print("Created New Account");
+                            // print("Created New Account");
+                            // showToast1();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -133,16 +153,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }).onError((error, stackTrace) {
                             print("Error ${error.toString()}");
                           });
-                          // print("All set");
-                          // setState(() {
-                          //   if (_formkey.currentState!.validate()) {
-                          //     Navigator.push(context,
-                          //         MaterialPageRoute(builder: (context) {
-                          //       return();
-                          //     }));
-                          //   // ignore: empty_statements
-                          //   };
-                          // });
+                          showToast1();
                         }),
                   ),
                 ],
@@ -151,4 +162,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ));
   }
+
+  void showToast1() => Fluttertoast.showToast(
+      msg: "Created New Account",
+      fontSize: 18,
+      backgroundColor: Colors.black54);
 }
