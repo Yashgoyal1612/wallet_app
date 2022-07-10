@@ -1,9 +1,10 @@
 // ignore_for_file: prefer_const_constructors, prefer_final_fields, sort_child_properties_last, avoid_init_to_null, unused_field, avoid_unnecessary_containers, body_might_complete_normally_nullable, avoid_print
 
-import 'package:email_validator/email_validator.dart';
+// import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:wallet_app/misc/pages/welcome_page..dart';
 import 'package:wallet_app/screens/home_screen.dart';
 import 'package:wallet_app/screens/reset_password.dart';
 import 'package:wallet_app/screens/signup_screen.dart';
@@ -25,13 +26,14 @@ class _SignInScreenState extends State<SignInScreen> {
   String? _nameError = null;
   bool _isVisible = false;
 
-  void validateEmail() {
-    final bool isValid =
-        EmailValidator.validate(_emailTextController.text.trim());
-    if (!isValid) {
-      showToast_email();
-    }
-  }
+  // void validateEmail() {
+  //   final bool isValid =
+  //       EmailValidator.validate(_emailTextController.text.trim());
+  //   if (isValid) {
+  //     ScaffoldMessenger.of(context)
+  //         .showSnackBar(SnackBar(content: Text('Valid email')));
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               setState(() {
                                 if (_formkey.currentState!.validate()) {}
                               });
-                              validateEmail();
+
                               // showToast();       showing in both with or without
                               FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
@@ -162,10 +164,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: ((context) => HomrScreen())));
+                                        builder: ((context) => WelcomePage())));
                               }).onError((error, stackTrace) {
                                 print("Error ${error.toString()}");
-                                // showToast();
+                                // validateEmail();
+                                showToast();
                               });
                             }),
                       ),
@@ -186,7 +189,7 @@ class _SignInScreenState extends State<SignInScreen> {
       children: [
         Text(
           "Don't have account?",
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontSize: 15),
         ),
         GestureDetector(
           onTap: () {
@@ -195,7 +198,8 @@ class _SignInScreenState extends State<SignInScreen> {
           },
           child: Text(
             " Sign Up",
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
           ),
         )
       ],
@@ -219,9 +223,9 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  // void showToast() => Fluttertoast.showToast(
-  //     msg: "No account found", fontSize: 18, backgroundColor: Colors.black54);
+  void showToast() => Fluttertoast.showToast(
+      msg: "No account found", fontSize: 18, backgroundColor: Colors.black54);
 
-  void showToast_email() => Fluttertoast.showToast(
-      msg: "Not a valid Email", fontSize: 18, backgroundColor: Colors.black54);
+  // void showToast_email() => Fluttertoast.showToast(
+  //     msg: "Not a valid Email", fontSize: 18, backgroundColor: Colors.black54);
 }

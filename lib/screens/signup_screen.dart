@@ -145,15 +145,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   password: _passwordTextController.text.trim())
                               .then((value) {
                             // print("Created New Account");
-                            // showToast1();
+                            showToast1();
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomrScreen()));
-                          }).onError((error, stackTrace) {
-                            print("Error ${error.toString()}");
+                                    builder: (context) => HomeScreen()));
                           });
-                          showToast1();
                         }),
                   ),
                 ],

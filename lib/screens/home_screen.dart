@@ -4,14 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wallet_app/screens/signin_screen.dart';
 
-class HomrScreen extends StatefulWidget {
-  HomrScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomrScreen> createState() => _HomrScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomrScreenState extends State<HomrScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:wallet_app/screens/home_screen.dart';
 
 class ResetPassword extends StatefulWidget {
-  ResetPassword({Key? key}) : super(key: key);
+  const ResetPassword({Key? key}) : super(key: key);
 
   @override
   State<ResetPassword> createState() => _ResetPasswordState();
@@ -14,10 +14,9 @@ class ResetPassword extends StatefulWidget {
 class _ResetPasswordState extends State<ResetPassword> {
   TextEditingController _emailTextController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailTextController.dispose();
-  }
+  // void dispose() {
+  //   _emailTextController.dispose();
+  // }
 
   Future passwordReset() async {
     try {
